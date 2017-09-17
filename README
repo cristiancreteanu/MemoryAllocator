@@ -1,0 +1,115 @@
+ ================================================================================
+                               Creteanu Cristian
+                                     313CA
+                                    (+bonus)
+ ================================================================================
+
+ Functia INITIALIZE va aloca N octeti din memorie si-i va initializa cu 0. Daca
+ nu s-a gasit zona libera in memorie, executia programului va fi oprita.
+ arenaChar va pointa pe tot parcursul programului catre inceputul arenei.
+
+ Functia FINALIZE va elibera zona de memorie precedent alocata si va opri
+ executia programului.
+
+ Functia DUMP parcurge arena si afiseaza octetii din aceasta. Inainte de a
+ ajunge la un octet ce se afla pe o pozitie divizibila cu 16 va afisa un rand nou
+ si pozitia acestui octet.
+
+ Functia ALLOC se va ocupa de alocarea memoriei. 
+ -Daca indexul de start are valoarea 0, adica nu a mai avut loc o alocare, va
+ aloca memorie imediat dupa indexul de start, daca exista memorie suficienta.
+ -Altfel, se cauta in acelasi timp un bloc alocat si unul liber: arenaChar0 va
+ retine inceputului blocului alocat, arenaChar1 va retine sfarsitul blocului
+ alocat si inceputul celui liber, iar arenaChar2 va retine sfarsitul zonei
+ libere. Daca nu exista o zona libera (adica diferenta dintre arenaChar2 si
+ arenaChar1 este 0), caut in continuare. In caz contrar, verific daca zona
+ libera este suficient de mare pentru alocare si ,daca este, modific arena si
+ afisez indexul inceputului sectiunii de date, iar, daca nu este, caut in
+ continuare. Procesul se repeta pana cand s-a gasit o zona libera destul de
+ mare intre indexul de start si ultimul bloc alocat si a avut loc alocarea sau
+ pana cand s-a ajuns la ultimul bloc de memorie alocat. Daca s-a ajuns la
+ ultimul bloc de memorie alocat si nu a avut loc alocarea noului bloc, se
+ verifica daca exista memorie suficienta intre ultimul bloc din arena si
+ sfarsitul arenei. Daca exista, are loc alocarea si se afiseaza valoarea
+ indexului inceputului sectiunii de date, iar, daca nu, se afiseaza valoarea 0.
+
+ Functia FREE va elibera un bloc de memorie. La primirea indexului sectiunii de
+ date a unui bloc, va modifica sectiunea de gestiune a blocurilor vecine astfel
+ incat ele sa indice unul catre altul si sa "uite" de cel dat pentru eliberare.
+
+ Functia FILL va completa cu o valoare data size octeti ai sectiunii de date a
+ unui bloc deja alocat.
+
+ Functia SHOWFREE va afisa numarul de blocuri(retinut in nrFreeBlocks) si octeti
+ (retinut in nrFreeBytes) liberi din memorie. Algoritmul folosit pentru aceasta
+ functie se bazeaza pe cel folosit la functia ALLOC: se cauta in acelasi timp
+ un bloc ocupat din memorie si unul liber. Daca nu se gaseste un bloc liber, se
+ cauta in continuare, iar, daca s-a gasit, se modifica nrFreeBlocks si
+ nrFreeBytes. La sfarsitul functiei, se afiseaza mesajul dorit.
+
+ Functia SHOWUSAGE va afisa numarul de blocuri(retinut in nrUsedBlocks) si
+ octeti (retinut in nrUsedBytes) ocupati din memorie. Algoritmul folosit pentru
+ aceasta functie se bazeaza pe cel folosit la functia ALLOC. Se cauta si
+ numarul de blocuri si octeti liberi ca in functia SHOWFREE pentru calculul
+ eficientei si al fragmentarii. La sfarsitul functiei se afiseaza mesajul dorit.
+
+ Functia SHOWALLOCATIONS	va afisa in ordine zonele libere si ocupate din arena.
+ Algoritmul folosit pentru aceasta functie se bazeaza pe cel folosit pentru
+ functia ALLOC: se cauta in acelasi timp un bloc ocupat din memorie si unul
+ liber. Daca nu se gaseste un bloc liber, se afiseaza numarul de bytes ocupati,
+ iar daca s-a gasit o zona libera, se afiseaza numarul de bytes ocupati urmat
+ de numarul de bytes liberi. Daca dupa ultimul bloc mai exista octeti liberi in
+ arena, este afisat numarul lor.
+
+ Functia ALLOCALIGNED va aloca un bloc de memorie si ii va alinia sectiunea de
+ date la align octeti.
+-Daca indexul de start are valoarea 0, adica nu a mai avut loc nicio alocare,
+ se verifica daca align este mai mic decat 16 (pozitia celei mai din stanga
+ sectiuni de date posibile) si, daca este, se cauta in multiplii lui pana cand
+ se gaseste primul mai mare sau egal cu 16. Apoi are loc alocarea, sectiunea de
+ date fiind aliniata la alignDup (variabila ce contine multiplul lui align) octeti.
+-Altfel, voi cauta printre toti multiplii lui align mai mari sau egali cu 16 si
+ mai mici decat indexul sectiunii de date a ultimului bloc alocat si, ca in
+ functia ALLOC, de fiecare data cand gasesc o zona libera, verific daca este
+ destul de mare pentru a introduce noul bloc aliniat la alignDup (multiplul lui
+ align) octeti. Cautarea se va opri cand se gaseste un bloc liber destul de mare
+ sau cand alignDup - 12 este mai mare sau egal decat indexul sfarsitului
+ sectiunii de date a ultimului bloc din arena, adica daca aloc memorie pentru
+ noul bloc dupa ultimul bloc, trebuie sa fie loc si pentru sectiunea de
+ gestiune. Daca exista spatiu liber intre ultimul bloc si sfarsitul arenei,
+ verific daca este destul de mare pentru a introduce noul bloc aliniat la
+ alignDup octeti si, daca este, afisez alignDup, iar, daca nu, afisez 0.
+
+ Functia REALLOC va realoca un bloc de memorie din arena. Aflu adresele
+ sectiunilor de date ale blocului inainte de realocare (arenaCharOld) si dupa
+ realocare (arenaCharNew) si dimensiunile sectiunilor de date a blocului
+ inainte de realocare (oldSize) si dupa realocare (newSize). Daca newSize <
+ oldSize, se copiaza doar newSize octeti de date din vechiul bloc, iar, daca
+ newSize > oldSize, se copiaza toti octetii de date din vechiul bloc.
+
+ Functia SHOWMAP va afisa sirul de length caractere. Creez un vector cu
+ elementele 0 si 1, de N elemente (vectorZoneLibereOcupate), care descrie
+ zonele libere (0) si ocupate (1) din arena. Aflu valoarea lui x (N * 1.0 / length)
+ -Daca x nu este subunitar, voi retine in y numarul de octeti care au fost luati
+ in calcul. La fiecare octet parcurs, verific daca este egal cu 1 si, daca
+ este, retin 1 in xBytesOccupied. Inainte de afisarea unui caracter, daca
+ xBytesOccupied este 1, afisez "*", iar, daca este 0, afisez ".", iar
+ xBytesOccupied devine 0. Procesul se repeta pana la ultimul element din
+ vector. In cazul in care unii octeti au fost ignorati pe final, se va afisa
+ "*" daca vreunul dintre ei are valoarea 1 si "." daca toti sunt 0.
+ -Daca x este subunitar, voi retine in y numarul de octeti care au fost luati in
+ calcul. Cat timp y + x nu depaseste valoarea 1, se va afisa "*" sau "." in
+ functie de valoarea elementului din vector de pe pozitia i (in unele cazuri, si
+ de pe pozitia i - 1). In momentul in care y + x depaseste valoarea 1, se scade 1
+ din y, care va avea valoarea negativa, pentru a sti cat trebuie sa ia in
+ considerare din urmatorul octet. Daca in acest moment y este diferit de 0, se
+ retine in xBytesOccupied valoarea octetului actual daca este egal cu 1. Procesul 
+ se repeta pana la ultimul element din vector. In cazul in care un octet a fost
+ ignorat pe final, se va afisa "*" sau "." in functie de valoarea lui xBytesOccupied.
+
+ In main, se va citi un string de la tastatura. Acest string va fi spart in
+ bucati. Stringul comanda1 va retine mereu primul cuvant al stringului citit,
+ iar stringul comanda2 le va retine pe rand pe urmatoarele. Pentru stringurile
+ ce descriu numere, se va realiza conversia catre integer cu functia atoi. Vor
+ fi chemate functiile cu argumentele necesare in functie de stringul citit pana
+ la intalnirea comenzii FINALIZE.
