@@ -1,1 +1,15 @@
+The program allows the following commands:
 
+INITIALIZE <N> - it MUST be the first one called and it initialises <N> bytes of memory.
+FINALIZE - it MUST be the last one called and it closes the program
+DUMP - prints a hexadecimal map of the memory
+ALLOC <SIZE> - allocates <SIZE> bytes of memory and returns the index (decimal format) of the start of the memory block
+FREE <INDEX> - frees the memory block at the specified index (decimal format)
+FILL <INDEX> <SIZE> <VALUE> - fills <SIZE> bytes with <VALUE> (0-255) starting from <INDEX>
+SHOW <INFO> - <INFO> can be:
+  FREE - displays the number of free bytes and blocks in the initialised memory block
+  USAGE - displays the number of used bytes and blocks in the initialised memory block
+  ALLOCATIONS - displays the memory blocks, both used and free
+ALLOCALIGNED <SIZE> <ALIGN> - similar to ALLOC, but ALIGN is a power of 2 and an INDEX is alligned to ALIGN bytes if INDEX % ALIGN == 0
+REALLOC <INDEX> <SIZE> - returns the index of the reallocated block of memory
+SHOW MAP <LENGTH> - displays a string of <LENGTH> characters (* or .), which describes the used and free bytes in the initialised memory block. A character will be '*' if the block is used and '.' otherwise.
